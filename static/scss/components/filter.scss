@@ -1,0 +1,14 @@
+.sub-nav {
+  list-style: none;
+
+  li {
+    display: block;
+    float:left;
+    margin: 0 20px;
+
+    &.nav-featured:before {
+      content: url("/static/img/featured_icon.png");
+      max-height: 1em;
+    }
+  }
+}

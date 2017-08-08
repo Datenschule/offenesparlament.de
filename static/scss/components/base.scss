@@ -1,0 +1,40 @@
+body {
+  overflow-x: hidden;
+}
+
+p {
+  font-size: 20px;
+}
+
+p.small {
+  font-size: 16px;
+}
+
+a,
+a:hover,
+a:focus,
+a:active,
+a.active {
+  color: $black;
+  outline: none;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: $light-grey;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "overpass", sans-serif;
+  text-transform: uppercase;
+  font-weight: 100;
+}
+
+h1 {
+  font-size: 45px;
+  font-weight: bold;
+}
+
+.img-centered {
+  margin: 0 auto;
+}
