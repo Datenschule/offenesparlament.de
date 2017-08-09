@@ -9,146 +9,93 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>{% block title %}Freelancer - Start Bootstrap Theme{% endblock %}</title>
+	<title>{{title}}</title>
 
 	{% block head %}
-	<!-- Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
-	<link href="/static/css/bootstrap.min.css" rel="stylesheet">
-
 	<!-- Custom CSS -->
 	<link href="/static/css/freelancer.css" rel="stylesheet">
 
-	<!-- Custom Fonts -->
-	<!--<link href="/static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">-->
-	<!--<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">-->
-	<!--<link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">-->
-
-	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	<!--[if lt IE 9]>
-	<!--<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>-->
-	<!--<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>-->
-	<![endif]-->
 	{% endblock %}
 </head>
 
 <body id="page-top" class="index">
 
-<!-- Navigation -->
-<!--<nav class="navbar navbar-default navbar-fixed-top">-->
-	<!--<div class="container">-->
-		<!--&lt;!&ndash; Brand and toggle get grouped for better mobile display &ndash;&gt;-->
-		<!--<div class="navbar-header page-scroll">-->
-			<!--<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">-->
-				<!--<span class="sr-only">Toggle navigation</span>-->
-				<!--<span class="icon-bar"></span>-->
-				<!--<span class="icon-bar"></span>-->
-				<!--<span class="icon-bar"></span>-->
-			<!--</button>-->
-			<!--<a class="navbar-brand" href="/">offenesParlament</a>-->
-		<!--</div>-->
-
-		<!--&lt;!&ndash; Collect the nav links, forms, and other content for toggling &ndash;&gt;-->
-		<!--<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">-->
-			<!--<ul class="nav navbar-nav navbar-right">-->
-				<!--<li class="hidden">-->
-					<!--<a href="#page-top"></a>-->
-				<!--</li>-->
-				<!--<li><a href="/protokolle" {% if selected == "protokolle" %} class="navbar-selected" {% endif %}>Protokolle</a></li>-->
-				<!--&lt;!&ndash;<li class="dropdown">&ndash;&gt;-->
-					<!--&lt;!&ndash;<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Services <span class="caret"></span></a>&ndash;&gt;-->
-					<!--&lt;!&ndash;<ul class="dropdown-menu">&ndash;&gt;-->
-						<!--&lt;!&ndash;<li><a href="/android-services">Android Development</a></li>&ndash;&gt;-->
-						<!--&lt;!&ndash;<li><a href="/ios-services">ios Development</a></li>&ndash;&gt;-->
-						<!--&lt;!&ndash;<li><a href="/web-development-services">Web Development</a></li>&ndash;&gt;-->
-					<!--&lt;!&ndash;</ul>&ndash;&gt;-->
-				<!--&lt;!&ndash;</li>&ndash;&gt;-->
-				<!--<li><a href="/analyse" {% if selected == "analyse" %} class="navbar-selected" {% endif %}>Analyse</a></li>-->
-				<!--<li><a href="/tracker" {% if selected == "tracker" %} class="navbar-selected" {% endif %}>Tracker</a></li>-->
-				<!--<li><a href="/daten-tools" {% if selected == "daten-tools" %} class="navbar-selected" {% endif %}>Daten & Tools</a></li>-->
-			<!--</ul>-->
-		<!--</div>-->
-		<!--&lt;!&ndash; /.navbar-collapse &ndash;&gt;-->
-	<!--</div>-->
-	<!--&lt;!&ndash; /.container-fluid &ndash;&gt;-->
-<!--</nav>-->
 <header id="top" class="navigation" role="banner">
 	<div class="navigation-wrapper">
 		<a href="/" class="logo">
-			<img class="header-logo-img" title="JedeSchule.de" alt="JedeSchule.de Logo" src="/assets/img/logos/logo_jedeschule.png">
-			<div class="header-title">JedeSchule.de</div>
+			<div class="header-title">offenesParlament</div>
 		</a>
 		<a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu"><i class="fa fa-bars"></i> MENU</a>
 		<nav role="navigation">
 			<ul id="js-navigation-menu" class="navigation-menu show">
-				<li class="nav-link active"><a href="/schulen">Schulen</a></li>
-				<li class="nav-link"><a href="/schulaktivitaeten">Schulaktivitäten</a></li>
-				<li class="nav-link"><a href="/schulsystem">Schulsystem</a></li>
-				<li class="nav-link"><a href="/daten">Daten</a></li>
+				<li class="nav-link {% if selected == 'protokolle' %}active {% endif %}"><a href="/protokolle">Protokolle</a></li>
+				<li class="nav-link {% if selected == 'analyse' %}active {% endif %}"><a href="/analyse">Analyse</a></li>
+				<li class="nav-link {% if selected == 'tracker' %}active {% endif %}"><a href="/tracker">Tracker</a></li>
+				<li class="nav-link {% if selected == 'daten-tools' %}active {% endif %}"><a href="/daten-tools">Daten & Tools</a></li>
 			</ul>
 		</nav>
 	</div>
 </header>
-{% block content %}{% endblock %}
 
-<!-- Footer -->
-<footer class="text-center">
-	<div class="footer-above">
-		<div class="container">
-			<div class="row">
-				<div class="footer-col col-md-4">
-					<!--
-					<h3>Around the Web</h3>
-					<ul class="list-inline">
-						<li>
-							<a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-facebook"></i></a>
-						</li>
-						<li>
-							<a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-google-plus"></i></a>
-						</li>
-						<li>
-							<a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-twitter"></i></a>
-						</li>
-						<li>
-							<a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-linkedin"></i></a>
-						</li>
-						<li>
-							<a href="#" class="btn-social btn-outline"><i class="fa fa-fw fa-dribbble"></i></a>
-						</li>
-					</ul>
-					-->
+{% block content %}{% endblock %}
+<footer>
+	<div class="container">
+		<div class="container-left-6 footer-container-left">
+			<div>
+				<p>Ein Projekt von</p>
+			</div>
+			<div class="footer-container-left-12">
+				<div class="footer-logo-container">
+					<div class="footer-logo footer-logo-bc">
+						<a href="http://www.abgeordnetenwatch.de"><img alt="Abgeordnetenwatch" src="/static/img/logos/logo_abgeordnetenwatch.png"></a>
+					</div>
 				</div>
-				<div class="footer-col col-md-4">
-					<h3>Location</h3>
-					<p>#109, Daffodil, Bhanu Township<br>Miyapur, Hyderabad - 500049</p>
-				</div>
-				<div class="footer-col col-md-4">
-					<!--
-					<h3>About Freelancer</h3>
-					<p>Freelance is a free to use, open source Bootstrap theme created by <a href="http://startbootstrap.com">Start Bootstrap</a>.</p>
-					-->
+				<div class="footer-logo-container">
+					<div class="footer-logo">
+						<a href="https://datenschule.de" target="_blank"><img alt="Datenschule" src="/static/img/logos/logo_datenschule.png"></a>
+					</div>
 				</div>
 			</div>
 		</div>
+		<div class="container-left-3 footer-text-container">
+			<p class="bold">Newsletter abonnieren</p>
+			<p>Melden Sie sich für den Datenschule
+				<a href="http://okfn.us5.list-manage.com/subscribe?u=929f1e07936386d34833e20d1&id=57affeefd3" target="_blank">Newsletter</a>
+				an.
+			</p>
+		</div>
+		<div class="container-left-3 footer-text-container">
+			<p>
+				<a href="/presse">Presse und Kontakt</a>
+			</p>
+		</div>
 	</div>
-	<div class="footer-below">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					Copyright &copy; Your Website 2015
+	<div class="container">
+		<div class="container-left-12 footer-container-left">
+			<div class="container-left-6 footer-container-left">
+				<p>Datenschule ist ein Projekt von</p>
+				<div class="footer-logo">
+					<a href="https://okfn.de"><img alt="OKF DE" src="/static/img/logos/logo_okfde.png"></a>
 				</div>
 			</div>
+			<div class="container-left-6 footer-container-left">
+				<p>
+					<a class="pull-right" href="#top"><i class="fa fa-arrow-circle-o-up"></i>nach oben</a>
+					<a href="/impressum">Impressum</a>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="container-left-12 footer-credits">
+			Die Inhalte dieser Webseite sind, sofern nicht anders angegeben, nach
+			<a href="https://creativecommons.org/licenses/by/3.0/deed.de" target="_blank">Creative Commons 3.0 Attribution</a>
+			lizensiert. <br/>
+			Coded with <3 by Datenschule. Wir bedanken uns für die technische Unterstützung bei
+			Knut Hühne und bei Nadine Stammen für das Design.
 		</div>
 	</div>
 </footer>
-
-
-<!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-<div class="scroll-top page-scroll visible-xs visible-sm">
-	<a class="btn btn-primary" href="#page-top">
-		<i class="fa fa-chevron-up"></i>
-	</a>
-</div>
 
 {% block scripts %}
 <!-- jQuery -->

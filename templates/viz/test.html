@@ -1,10 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}}
+{% block title %}Home{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="container u-margin-top">
+	<div class="container-left-12">
+		<!--<a href="#" class="fa fa-arrow-left fa-fw link-nav">zurück zur Übersicht</a>-->
+		<a href="/analyse" class="link-nav"><i class="fa fa-arrow-left fa-fw"></i>zurück zur Übersicht</a>
+	</div>
+</div>
+<div class="container">
+	<div class="container-left-10">
+		<h1>Redeanteile nach Parteien/Geschlecht/Alter</h1>
+	</div>
+</div>
 
-</body>
-</html>
+<div class="container">
+	<div class="container-left-offset-2 container-left-7">
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad adipisci aliquid assumenda commodi culpa dolorem ea fugit harum in ipsum labore magni minima repellat, tenetur ullam veniam vitae voluptatibus. Architecto aspernatur corporis delectus deleniti dignissimos dolor ea earum et, illo iste labore mollitia natus perspiciatis quis quisquam repellendus repudiandae similique.</p>
+	</div>
+</div>
+
+<div class="container">
+	<div class="container-left-12">
+		<div class="header">Wähle aus</div>
+
+	</div>
+</div>
+{% endblock %}
