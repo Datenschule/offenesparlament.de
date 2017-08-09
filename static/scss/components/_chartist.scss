@@ -1,0 +1,284 @@
+
+.chartist-finance-report {
+
+  h5 {
+    padding-left: 10px;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+
+  .special-data-column {
+    padding-bottom: 0;
+    @include respond-to(large-up) {
+      padding-bottom: 20px;
+    }
+  }
+
+  .chart-grid {
+    @include grid-container;
+  }
+  .chart-grid-column {
+    @include grid-column(12);
+
+    h5 {
+      min-height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @include respond-to(small-up) {
+
+      @include grid-column(6);
+      h5 {
+        min-height: 60px;
+      }
+      &:nth-of-type(1) {
+        margin-left: 0;
+      }
+      &:nth-of-type(3) {
+        margin-left: 0;
+      }
+    }
+    @include respond-to(large-up) {
+      @include grid-column(3);
+
+      h5 {
+        min-height: 80px;
+      }
+      &:nth-of-type(3) {
+        margin-left: 20px;
+      }
+
+    }
+
+  }
+
+  @for $i from 1 through length($chart-colors) {
+    .chart-color-#{$i - 1} {
+      .ct-bar {
+        stroke: nth($chart-colors, $i);
+      }
+    }
+  }
+}
+
+.chartist-programs, .chartist-teacher, .chartist-foreign-languages, .chartist-school-type-change {
+  margin-top: 54px;
+  margin-bottom: 20px;
+
+  .ct-series-a {
+    .ct-bar {
+      stroke: nth($chart-colors, 1);
+    }
+  }
+  .ct-series-b {
+    .ct-bar {
+      stroke: nth($chart-colors, 2);
+    }
+  }
+  .ct-series-c {
+    .ct-bar {
+      stroke: nth($chart-colors, 3);
+    }
+  }
+  .ct-series-d {
+    .ct-bar {
+      stroke: nth($chart-colors, 4);
+    }
+  }
+  .ct-series-e {
+    .ct-bar {
+      stroke: nth($chart-colors, 5);
+    }
+  }
+  .ct-series-f {
+    .ct-bar {
+      stroke: nth($chart-colors, 6);
+    }
+  }
+  .ct-series-g {
+    .ct-bar {
+      stroke: nth($chart-colors, 7);
+    }
+  }
+  .ct-series-h {
+    .ct-bar {
+      stroke: nth($chart-colors, 8);
+    }
+  }
+  .ct-series-i {
+    .ct-bar {
+      stroke: nth($chart-colors, 9);
+    }
+  }
+}
+
+.chartist-foreign-languages-complete {
+  .ct-series {
+    cursor: pointer;
+  }
+}
+
+.chartist-foreign-languages-select {
+
+  @for $i from 1 through length($chart-colors) {
+    &.chartist-foreign-languages-select-#{$i - 1} {
+      .ct-bar {
+        stroke: nth($chart-colors, $i) !important;
+      }
+    }
+  }
+
+}
+
+.chartists-footnote, .chartists-footnote-center {
+  fill: rgba(0, 0, 0, .4);
+  color: rgba(0, 0, 0, .4);
+  font-size: .75rem;
+  line-height: 1.5em;
+  text-align: right;
+}
+
+.chartists-footnote-center {
+  text-align: center;
+}
+
+.chartist-tooltip {
+  display: none;
+}
+
+.ct-axis-title {
+  fill: rgba(0, 0, 0, .4);
+  color: rgba(0, 0, 0, .4);
+}
+
+.chartist-tooltip.tooltip-show {
+  display: inline-block;
+}
+
+.chartist-activities {
+
+  text-align: center;
+
+  .chart-grid {
+  }
+  .chart-grid-column {
+    display: inline-block;
+    height: 160px;
+    width: 124px;
+
+    h5 {
+      margin-bottom: 0;
+      min-height: 40px;
+      display: -webkit-flex;
+      display: flex;
+      font-size: 0.9em;
+      line-height: 1.1em;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .ct-chart {
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin: auto;
+  }
+  .ct-series-a .ct-slice-pie {
+    fill: $chart-color-pie;
+  }
+
+  .ct-series-b .ct-slice-pie {
+    fill: $chart-color0;
+  }
+}
+
+.ct-bar-label {
+  fill: rgba(0, 0, 0, .6);
+  color: rgba(0, 0, 0, .6);
+  font-size: 12px;
+}
+
+.ct-legend {
+  position: relative;
+  z-index: 10;
+  list-style: none;
+  text-align: center;
+  font-size: 12px;
+
+  li {
+    position: relative;
+    padding-left: 23px;
+    margin-bottom: 3px;
+    display: inline-block;
+    line-height: 1em;
+    margin-left: 15px;
+  }
+
+  li:before {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    left: 0;
+    content: '';
+    border: 3px solid transparent;
+    border-radius: 2px;
+  }
+
+  li.inactive:before {
+    background: transparent;
+  }
+
+  &.ct-legend-inside {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  @for $i from 0 to length($chart-colors) {
+    .ct-series-#{$i}:before {
+      background-color: nth($chart-colors, $i + 1);
+      border-color: nth($chart-colors, $i + 1);
+    }
+  }
+}
+
+.chartist-teacher-amount {
+  svg {
+    overflow: visible;
+  }
+}
+
+.chartist-foreign-languages, .chartist-school-type-change {
+  svg {
+    overflow: visible;
+  }
+
+  @include respond-to(medium-down) {
+
+    foreignObject {
+      text-align: right; //this property is important, if set to right, chartist.events.draw js will center the rotated labels
+      overflow: visible;
+    }
+
+
+    .ct-label.ct-horizontal.ct-end {
+      position: relative;
+      justify-content: flex-end;
+      text-align: right;
+      transform-origin: 100% 0;
+      transform: translate(-100%) rotate(-90deg);
+      overflow: visible;
+      white-space: nowrap;
+    }
+  }
+  @include respond-to(medium-up) {
+
+    .ct-horizontal.ct-label {
+      word-break: break-word;
+    }
+  }
+}

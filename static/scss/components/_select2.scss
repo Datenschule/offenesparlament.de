@@ -1,0 +1,19 @@
+$selected-color: #3875d7;
+$selected-active-color: lighten($selected-color, 20%);
+
+.ui-select-choices-row:hover {
+  background-color: $selected-active-color;
+}
+
+.ui-select-container {
+  width: 100%;
+  font-size: 14px;
+}
+
+.select2-results .select2-result-label {
+  font-size: 14px;
+}
+
+.ui-select-match-item.select2-search-choice span {
+  font-size: 14px;
+}

@@ -1,0 +1,16 @@
+//@import '../fonts/cabin/cabin';
+
+@import "../fonts/overpass";
+@import './lib/font-awesome/font-awesome';
+
+.smaller {
+  font-size: 0.8em;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+i::before {
+  margin-right: 5px;
+}
