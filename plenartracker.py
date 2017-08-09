@@ -11,7 +11,7 @@ def index():
 
 @app.route("/protokolle")
 def protokolle():
-    return render_template("protokolle.html", selected="protokolle")
+    return render_template("protokolle.html", title="Protokolle", selected="protokolle")
 
 @app.route("/analyse")
 def analyse():
@@ -53,15 +53,23 @@ def analyse():
             "link": "vote"
         }
     ]
-    return render_template("analyse.html", selected="analyse", viz=viz)
+    return render_template("analyse.html", title="Analyse", selected="analyse", viz=viz)
 
 @app.route("/tracker")
 def tracker():
-    return render_template("tracker.html", selected="tracker")
+    return render_template("tracker.html", title="Tracker", selected="tracker")
 
 @app.route("/daten-tools")
 def daten_tools():
-    return render_template("daten-tools.html", selected="daten-tools")
+    return render_template("daten-tools.html", title="Daten & Tools", selected="daten-tools")
+
+@app.route("/impressum")
+def impressum():
+    return render_template("impressum.html", title="Impressum")
+
+@app.route("/viz/test")
+def viz_test():
+    return render_template("viz/test.html", title="viztest")
 
 
 if __name__ == '__main__':
