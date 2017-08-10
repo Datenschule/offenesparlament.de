@@ -6936,4 +6936,62 @@ svg {
 svg#germany_svg path:hover {
   fill: #b2c326; }
 
+.protocols-speaker {
+  font-weight: bold;
+  text-decoration: none;
+  color: black; }
+
+.protocols-text {
+  color: #444444;
+  line-height: 1.6em; }
+
+.protocols-poi {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column; }
+  .protocols-poi div {
+    border-radius: 1.5px;
+    background-color: white;
+    padding: 1em;
+    width: 55%;
+    display: flex;
+    color: #444444;
+    font-style: italic; }
+  .protocols-poi a {
+    text-decoration: none;
+    color: #444444; }
+
+/* if there is a group of pois they should have a little less margin between them. */
+.protocols-poi + .protocols-poi {
+  margin-top: -1.5em; }
+
+.protocols-poiemoji {
+  margin-right: 1ch;
+  font-style: normal; }
+
+.protocols-poi, .protocols-text {
+  margin-bottom: 3em; }
+
+.protocols-poi .protocols-jumpmark, .protocols-speaker-info .protocols-jumpmark {
+  opacity: 0; }
+
+.protocols-poi:hover .protocols-jumpmark, .protocols-speaker-info:hover .protocols-jumpmark {
+  opacity: 1;
+  text-decoration: none; }
+
+.protocols-poi-party img {
+  filter: grayscale(100%);
+  height: .8em; }
+
+.protocols-party img {
+  height: 1em; }
+
+.protocols-main {
+  max-width: 50ch;
+  line-height: 1.4em;
+  margin: 0 auto; }
+
+div:target {
+  background-color: rgba(255, 255, 191, 0.44); }
+
 /*# sourceMappingURL=freelancer.css.map */

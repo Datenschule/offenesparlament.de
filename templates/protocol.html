@@ -1,0 +1,79 @@
+<!--<html>-->
+<!--<head>-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <!--<link href="{{ url_for('static', filename='main.css') }}" type="text/css" rel="stylesheet"/>-->
+<!--</head>-->
+<!--<body>-->
+{% extends "base.html" %}}
+{% block title %}Home{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="container-left-12">
+        <div class="main">
+            <h1> {{ data[0].wahlperiode }}. Wahlperiode - Sitzung {{ data[0].sitzung }}</h1>
+            {# unfortunately jinja does not support overwriting regular variables from within a loop... #}
+            {% set vars = {'last_top': None} %}
+
+            {% for row in data %}
+            {% if row.top|string() != vars.last_top|string() %}
+            {% if vars.update({'last_top': row.top}) %} {% endif %}
+            <h2 id="top-{{ row.top.title }}">{{row.top.title}}</h2>
+            {% endif %}
+
+            {% if row['type'] in ['speech', 'chair'] %}
+            <div id="{{row['sequence']}}" {% if debug %} style="background-color: {{row['top'] | prcolor }}" {% endif %}>
+                <div class="speaker-info">
+
+                    <a class="protocols-speaker" {%if row.agw_url %} href="{{row.agw_url}}" {% endif %}>
+                        {% if row['speaker_party'] %}
+                        {{row['speaker_cleaned']}}
+                        {% else %}
+                        {{row.speaker}}
+                        {% endif %}
+                    </a>
+                    {% if row['type'] == 'chair' %}
+                    👩‍⚖️
+                    {% endif %}
+
+                    {% if row['speaker_party'] %}
+                    <span class="protocols-party"><img src="{{ url_for('static', filename='img/parties/' + row['speaker_party'] + '.svg') }}"/></span>
+                    {% endif %}
+                    <a class="jumpmark" href="#{{row['sequence']}}">🔗</a>
+                </div>
+                <div class="text">{{row['text'] | nl2br}}</div>
+            </div>
+            {% elif row['type'] == 'poi' %}
+            <div class="protocols-poi"  {% if debug %} style="background-color: {{row['top'] | prcolor }}" {% endif %}>
+                <div id="{{row['sequence']}}">
+                    <span class="protocols-poiemoji">
+                        {{ row['text'] | poiemoji }}
+                    </span>
+                    <span>
+                        {{ row['text'] }}
+
+                        {% if row['speaker_cleaned'] %}
+                            (
+                                <a {%if row.agw_url %} href="{{row.agw_url}}" {% endif %} >{{row['speaker_cleaned']}}</a>
+                                {% if row['speaker_party'] %}
+                                <span class="protocols-poi-party"><img src="{{ url_for('static', filename='img/parties/' + row['speaker_party'] + '.svg') }}"/></span>
+                                {% endif %}
+                            )
+                        {% endif %}
+                        <a class="protocols-jumpmark" href="#{{row['sequence']}}">🔗</a>
+                    </span>
+
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!--</body>-->
+<!--</html>-->
+{% endblock %}
+
