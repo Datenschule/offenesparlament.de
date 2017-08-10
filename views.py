@@ -91,6 +91,6 @@ def daten_tools():
 def impressum():
     return render_template("impressum.html", title="Impressum")
 
-@app.route("/viz/test")
+@app.route("/analyse/redeanteile")
 def viz_test():
-    return render_template("viz/test.html", title="viztest")
+    return render_template("analyse/redeanteile.html", title="Analyse")
