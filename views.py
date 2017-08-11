@@ -1,10 +1,10 @@
 import json
 import os
 
-from flask import render_template, request
+from flask import render_template, request, jsonify
 
 from plenartracker import app
-from models import Utterance, Top
+from models import Utterance, Top, Speaker
 
 
 def get_mdbs():
@@ -94,3 +94,25 @@ def impressum():
 @app.route("/analyse/redeanteile")
 def viz_test():
     return render_template("analyse/redeanteile.html", title="Analyse")
+
+
+@app.route("/api/tops")
+def api_tops():
+    search = request.args.get("search")
+    print(search)
+    people = request.args.getlist("people")
+    print(people)
+    sessions = Top.get_all(search=search, people=people)
+    return jsonify(data=sessions)
+
+
+@app.route("/api/speakers")
+def api_speakers():
+    speakers = Speaker.get_all()
+    speakers = [
+        {'speaker_cleaned': utterance.speaker_cleaned,
+         'speaker_name': utterance.speaker,
+         'speaker_party': utterance.speaker_party,
+         'speaker_fp': utterance.speaker_fp} for utterance in speakers
+    ]
+    return jsonify(data=speakers)

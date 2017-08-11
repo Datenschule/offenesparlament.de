@@ -2,7 +2,19 @@ import itertools
 from plenartracker import db
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, load_only
+
+
+class Speaker:
+    @staticmethod
+    def get_all():
+        return db.session.query(Utterance) \
+            .options(load_only("speaker", "speaker_fp", "speaker_cleaned")) \
+            .filter(Utterance.type == 'speech') \
+            .distinct(Utterance.speaker,
+                      Utterance.speaker_fp,
+                      Utterance.speaker_cleaned) \
+            .all()
 
 
 class Utterance(db.Model):
@@ -24,11 +36,11 @@ class Utterance(db.Model):
 
     @staticmethod
     def get_all(wahlperiode, session):
-        return db.session.query(Utterance)\
-                         .filter(Utterance.sitzung == session) \
-                         .filter(Utterance.wahlperiode == wahlperiode) \
-                         .order_by(Utterance.sequence) \
-                         .all()
+        return db.session.query(Utterance) \
+            .filter(Utterance.sitzung == session) \
+            .filter(Utterance.wahlperiode == wahlperiode) \
+            .order_by(Utterance.sequence) \
+            .all()
 
     def __repr__(self):
         return '<Utterance {}-{}-{}>'.format(self.wahlperiode, self.sitzung, self.sequence)
@@ -43,9 +55,15 @@ class Top(db.Model):
     title = db.Column(db.String)
 
     @staticmethod
-    def get_all():
-        data = db.session.query(Top).all()
+    def get_all(search=None, people=None):
+        query = db.session.query(Top)
+        if search:
+            query = query.join(Utterance) \
+                        .filter(Utterance.text.contains(search))
+        if people:
+            query = query.filter(Utterance.speaker_fp.in_(people))
 
+        data = query.all()
         results = []
         for key, igroup in itertools.groupby(data, lambda x: (x.wahlperiode, x.sitzung)):
             wahlperiode, sitzung = key
