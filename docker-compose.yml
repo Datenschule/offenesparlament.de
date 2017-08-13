@@ -1,17 +1,16 @@
-version: '2'
-services:
-  web:
-    build: .
-    ports:
-      - "8899:8000"
-    links:
-          - database
-        environment:
-          DATABASE_URL: postgres://postgres:@database
-
-  database:
-      ports:
-        - "32780:5432"
-      image: postgres:9.6
-      volumes:
-        - ./plpr-docker-database-data:/var/lib/postgresql/data
+--- 
+services: 
+  database: 
+    image: "postgres:9.6"
+    ports: 
+      - "32780:5432"
+    volumes: 
+      - "./plpr-docker-database-data:/var/lib/postgresql/data"
+  web: 
+    build: "."
+    environment: 
+      DATABASE_URL: "postgres://postgres:@database"
+    links: 
+      - database
+    ports: "-\"8899:8000\""
+version: "2"
