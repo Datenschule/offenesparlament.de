@@ -73,9 +73,12 @@ class Top(db.Model):
     @staticmethod
     def get_all(search=None, people=None, years=None, topics=None):
         query = db.session.query(Top)
+        if search or people:
+            query = query.join(Utterance)
+
         if search:
-            query = query.join(Utterance) \
-                .filter(Utterance.text.contains(search))
+            query = query.filter(Utterance.text.contains(search))
+
         if people:
             query = query.filter(Utterance.speaker_fp.in_(people))
 
