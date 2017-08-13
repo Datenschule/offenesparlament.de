@@ -101,8 +101,8 @@ def api_tops():
     search = request.args.get("search")
     people = request.args.getlist("people")
     years = request.args.getlist("years")
-    topics = request.args.getlist("topics")
-    sessions = Top.get_all(search=search, people=people, years=years, topics=topics)
+    categories = request.args.getlist("categories")
+    sessions = Top.get_all(search=search, people=people, years=years, categories=categories)
     return jsonify(data=sessions)
 
 

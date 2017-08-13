@@ -71,7 +71,7 @@ class Top(db.Model):
     category = db.Column(db.String)
 
     @staticmethod
-    def get_all(search=None, people=None, years=None, topics=None):
+    def get_all(search=None, people=None, years=None, categories=None):
         query = db.session.query(Top)
         if search or people:
             query = query.join(Utterance)
