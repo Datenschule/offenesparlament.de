@@ -2,7 +2,7 @@ import itertools
 from plenartracker import db
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, load_only
+from sqlalchemy.orm import relationship, load_only, class_mapper
 
 
 class Speaker:
@@ -42,6 +42,15 @@ class Utterance(db.Model):
             .order_by(Utterance.sequence) \
             .all()
 
+    def to_json(self):
+        d = {}
+        columns = class_mapper(self.__class__).columns
+        for c in columns:
+            name = c.name
+            d[name] = getattr(self, name)
+        d['top'] = self.top.title if self.top else None
+        return d
+
     def __repr__(self):
         return '<Utterance {}-{}-{}>'.format(self.wahlperiode, self.sitzung, self.sequence)
 
@@ -53,15 +62,26 @@ class Top(db.Model):
     wahlperiode = db.Column(db.Integer)
     sitzung = db.Column(db.Integer)
     title = db.Column(db.String)
+    title_clean = db.Column(db.String)
+    description = db.Column(db.String)
+    number = db.Column(db.String)
+    week = db.Column(db.Integer)
+    detail = db.Column(db.String)
+    year = db.Column(db.Integer)
+    category = db.Column(db.String)
 
     @staticmethod
-    def get_all(search=None, people=None):
+    def get_all(search=None, people=None, years=None, topics=None):
         query = db.session.query(Top)
         if search:
             query = query.join(Utterance) \
-                        .filter(Utterance.text.contains(search))
+                .filter(Utterance.text.contains(search))
         if people:
             query = query.filter(Utterance.speaker_fp.in_(people))
+
+        if years:
+            years = [int(year) for year in years]
+            query = query.filter(Top.year.in_(years))
 
         data = query.all()
         results = []
@@ -72,3 +92,14 @@ class Top(db.Model):
                             "tops": [entry.title for entry in list(igroup)]})
 
         return sorted(results, key=lambda entry: (entry["session"]["wahlperiode"], entry["session"]["sitzung"]))
+
+    @staticmethod
+    def get_categories():
+        db_topics = db.session.query(Top) \
+                .distinct(Top.category) \
+                .all()
+        topics = set()
+        for row in db_topics:
+            topics.update(row.category.split(";"))
+        topics.discard("")
+        return list(topics)

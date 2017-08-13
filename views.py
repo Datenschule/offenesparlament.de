@@ -99,10 +99,10 @@ def viz_test():
 @app.route("/api/tops")
 def api_tops():
     search = request.args.get("search")
-    print(search)
     people = request.args.getlist("people")
-    print(people)
-    sessions = Top.get_all(search=search, people=people)
+    years = request.args.getlist("years")
+    topics = request.args.getlist("topics")
+    sessions = Top.get_all(search=search, people=people, years=years, topics=topics)
     return jsonify(data=sessions)
 
 
@@ -116,3 +116,16 @@ def api_speakers():
          'speaker_fp': utterance.speaker_fp} for utterance in speakers
     ]
     return jsonify(data=speakers)
+
+
+@app.route("/api/session/<int:session_id>")
+def api_utterances(session_id):
+    WAHLPERIODE=18
+    utterances = Utterance.get_all(WAHLPERIODE, session_id)
+    return jsonify(data=[u.to_json() for u in utterances])
+
+
+@app.route("/api/categories")
+def api_categories():
+    categories = Top.get_categories()
+    return jsonify(data=categories)
