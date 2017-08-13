@@ -1,7 +1,7 @@
 import itertools
 from plenartracker import db
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, or_
 from sqlalchemy.orm import relationship, load_only, class_mapper
 
 
@@ -86,7 +86,12 @@ class Top(db.Model):
             years = [int(year) for year in years]
             query = query.filter(Top.year.in_(years))
 
+        if categories:
+            conditions = [Top.category.contains(category) for category in categories]
+            query = query.filter(or_(*conditions))
+
         data = query.all()
+
         results = []
         for key, igroup in itertools.groupby(data, lambda x: (x.wahlperiode, x.sitzung)):
             wahlperiode, sitzung = key
