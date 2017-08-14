@@ -97,7 +97,7 @@ class Top(db.Model):
             wahlperiode, sitzung = key
             results.append({"session": {"wahlperiode": wahlperiode,
                                         "sitzung": sitzung},
-                            "tops": [entry.title for entry in list(igroup)]})
+                            "tops": [{"title": entry.title, "categories": entry.category.split(";")} for entry in list(igroup)]})
 
         return sorted(results, key=lambda entry: (entry["session"]["wahlperiode"], entry["session"]["sitzung"]))
 
