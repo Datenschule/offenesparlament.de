@@ -236,7 +236,7 @@ class Top(db.Model):
             cat = row['category']
             if cat not in results.keys():
                 results[cat] = 0
-            results[cat] += row['duration']
+            results[cat] += row['duration'] if row['duration'] is not None else 0
         return results
 
     @staticmethod

@@ -174,6 +174,3 @@ def api_mdb_aggregated_age():
         result[grouplabel] += count
     return json.dumps(result)
 
-@app.route("api/mdb/speech")
-def api_mdb_speech():
-    data = MdB.get_by_speech_frequency()
