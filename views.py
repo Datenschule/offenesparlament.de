@@ -68,11 +68,13 @@ def api_tops_grouped():
 @app.route("/api/speakers")
 def api_speakers():
     speakers = Speaker.get_all()
+    i = 0
     speakers = [
         {'speaker_cleaned': utterance.speaker_cleaned,
          'speaker_name': utterance.speaker,
          'speaker_party': utterance.speaker_party,
-         'speaker_fp': utterance.speaker_fp} for utterance in speakers
+         'speaker_fp': utterance.speaker_fp,
+         'picture': utterance.picture.replace("http", "https")} for utterance in speakers
     ]
     return jsonify(data=speakers)
 

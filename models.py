@@ -9,9 +9,9 @@ from sqlalchemy.orm import relationship, load_only, Load, class_mapper, subquery
 class Speaker:
     @staticmethod
     def get_all():
-        return db.session.query(Utterance) \
-            .options(load_only("speaker", "speaker_fp", "speaker_cleaned")) \
+        return db.session.query(Utterance.speaker, Utterance.speaker_cleaned, Utterance.speaker_fp, Utterance.speaker_party, MdB.picture) \
             .filter(Utterance.type == 'speech') \
+            .filter(Utterance.speaker_key == MdB.id) \
             .distinct(Utterance.speaker,
                       Utterance.speaker_fp,
                       Utterance.speaker_cleaned) \
@@ -205,10 +205,10 @@ class Top(db.Model):
         data = query.all()
 
         results = []
-        for key, igroup in itertools.groupby(data, lambda x: (x.wahlperiode, x.sitzung)):
-            wahlperiode, sitzung = key
+        for key, igroup in itertools.groupby(data, lambda x: (x.wahlperiode, x.sitzung, x.held_on, x.duration)):
+            wahlperiode, sitzung, held_on, duration = key
             results.append({"session": {"wahlperiode": wahlperiode,
-                                        "sitzung": sitzung},
+                                        "sitzung": sitzung, "date": held_on, "duration": duration},
                             "tops": [{"title": entry.title, "categories": entry.category.split(";")} for entry in list(igroup)]})
 
         return sorted(results, key=lambda entry: (entry["session"]["wahlperiode"], entry["session"]["sitzung"]))
