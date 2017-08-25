@@ -1,6 +1,7 @@
 import itertools
 from plenartracker import db
 from datetime import datetime
+from datetime import date
 
 from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.orm import relationship, load_only, Load, class_mapper, subqueryload
@@ -9,13 +10,17 @@ from sqlalchemy.orm import relationship, load_only, Load, class_mapper, subquery
 class Speaker:
     @staticmethod
     def get_all():
-        return db.session.query(Utterance.speaker, Utterance.speaker_cleaned, Utterance.speaker_fp, Utterance.speaker_party, MdB.picture) \
+        return db.session.query(Utterance.speaker, Utterance.speaker_cleaned, Utterance.speaker_fp, Utterance.speaker_party, MdB.picture, MdB.birth_date, MdB.education) \
             .filter(Utterance.type == 'speech') \
             .filter(Utterance.speaker_key == MdB.id) \
             .distinct(Utterance.speaker,
                       Utterance.speaker_fp,
                       Utterance.speaker_cleaned) \
             .all()
+
+def calculate_age(born):
+    today = date.today()
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 class MdB(db.Model):
     __tablename__ = "mdb"

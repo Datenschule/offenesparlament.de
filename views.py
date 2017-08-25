@@ -6,7 +6,11 @@ from flask import render_template, request, jsonify
 from plenartracker import app
 from models import Utterance, Top, Speaker, MdB
 from datetime import datetime
+from datetime import date
 
+def calculate_age(born):
+    today = date.today()
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 def get_mdbs():
     dir = os.path.dirname(__file__)
@@ -74,6 +78,8 @@ def api_speakers():
          'speaker_name': utterance.speaker,
          'speaker_party': utterance.speaker_party,
          'speaker_fp': utterance.speaker_fp,
+         'age': calculate_age(utterance.birth_date),
+         'education': utterance.education,
          'picture': utterance.picture.replace("http", "https")} for utterance in speakers
     ]
     return jsonify(data=speakers)
