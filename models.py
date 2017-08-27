@@ -90,6 +90,9 @@ class MdB(db.Model):
                     "speaker_key": item.speaker_key,
                     "speaker_fp": item.speaker_fp,
                     "party": item.party,
+                    "first_name": item.first_name,
+                    "last_name": item.last_name,
+                    "picture": item.picture,
                     "category": category,
                     "count": item[4]
                 })
