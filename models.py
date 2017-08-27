@@ -54,6 +54,15 @@ class MdB(db.Model):
             result[entry] = count
         return result
 
+    def to_json(self):
+        d = {}
+        columns = class_mapper(self.__class__).columns
+        for c in columns:
+            name = c.name
+            d[name] = getattr(self, name)
+        d['birth_date'] = str(self.birth_date)
+        return d
+
     def __repr__(self):
         return '<MdB {}-{}-{}>'.format(self.first_name, self.last_name, self.party)
 

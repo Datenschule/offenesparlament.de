@@ -165,6 +165,10 @@ def api_utterances_election_list_category():
             result[category][election_list] += item['count']
     return json.dumps(result)
 
+@app.route("/api/mdb/")
+def api_mdb():
+    return jsonify(data=[mdb.to_json() for mdb in MdB.get_all()])
+
 @app.route("/api/mdb/aggregated")
 def api_mdb_aggregated():
     column = request.args.get("attribute")
