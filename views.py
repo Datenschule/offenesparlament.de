@@ -169,6 +169,11 @@ def api_utterances_election_list_category():
 def api_mdb():
     return jsonify(data=[mdb.to_json() for mdb in MdB.get_all()])
 
+@app.route("/api/mdb/speech_by_category")
+def api_mdb_speech_by_category():
+    data = MdB.count_speeches_by_top_category()
+    return jsonify(data)
+
 @app.route("/api/mdb/aggregated")
 def api_mdb_aggregated():
     column = request.args.get("attribute")

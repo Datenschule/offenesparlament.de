@@ -2,6 +2,7 @@ import itertools
 from plenartracker import db
 from datetime import datetime
 from datetime import date
+from functools import reduce
 
 from sqlalchemy import ForeignKey, or_, func
 from sqlalchemy.orm import relationship, load_only, Load, class_mapper, subqueryload
@@ -62,6 +63,48 @@ class MdB(db.Model):
             d[name] = getattr(self, name)
         d['birth_date'] = str(self.birth_date)
         return d
+
+    @staticmethod
+    def count_speeches_by_top_category():
+        subquery = db.session.query(Utterance.speaker_fp, Utterance.sitzung, Utterance.wahlperiode, Utterance.top_id,
+                                    Utterance.type, Utterance.speaker_key) \
+            .group_by(Utterance.speaker_key, Utterance.speaker_fp, Utterance.sitzung, Utterance.wahlperiode,
+                      Utterance.top_id, Utterance.type) \
+            .subquery()
+        query_result = db.session.query(subquery.c.speaker_key, subquery.c.speaker_fp, MdB.party, Top.category, func.count(),
+                                MdB.first_name, MdB.last_name,MdB.picture) \
+            .filter(Top.id == subquery.c.top_id) \
+            .filter(MdB.id == subquery.c.speaker_key) \
+            .filter(Top.category != '') \
+            .filter(subquery.c.speaker_fp != None) \
+            .filter(Top.category != 'ungültig') \
+            .filter(subquery.c.type == 'speech') \
+            .group_by(subquery.c.speaker_fp, Top.category, subquery.c.speaker_key, MdB.party, MdB.first_name, MdB.last_name,
+                      MdB.picture) \
+            .all()
+
+        data = []
+        for item in query_result:
+            for category in item.category.split(";"):
+                data.append({
+                    "speaker_key": item.speaker_key,
+                    "speaker_fp": item.speaker_fp,
+                    "party": item.party,
+                    "category": category,
+                    "count": item[4]
+                })
+
+        result = []
+        for category, igroup in itertools.groupby(data, lambda x: (x['category'])):
+            items = list(igroup)
+            count = reduce((lambda prev, item: prev + item), [entry['count'] for entry in items])
+            first = items[0].copy()
+            first['category'] = category
+            first['count'] = count
+            result.append(first)
+
+        return result
+
 
     def __repr__(self):
         return '<MdB {}-{}-{}>'.format(self.first_name, self.last_name, self.party)
