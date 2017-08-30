@@ -249,7 +249,8 @@ class Top(db.Model):
             query = query.join(Utterance)
 
         if search:
-            query = query.filter(Utterance.text.contains(search))
+            for item in search:
+                query = query.filter(Utterance.text.contains(item))
 
         if people:
             query = query.filter(Utterance.speaker_fp.in_(people))
@@ -261,8 +262,9 @@ class Top(db.Model):
         if categories:
             conditions = [Top.category.contains(category) for category in categories]
             query = query.filter(or_(*conditions))
-
+        print(str(query))
         data = query.all()
+
 
         results = []
         for key, igroup in itertools.groupby(data, lambda x: (x.wahlperiode, x.sitzung, x.held_on, x.duration)):

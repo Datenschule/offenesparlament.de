@@ -61,7 +61,8 @@ def viz_test():
 
 @app.route("/api/tops/")
 def api_tops_grouped():
-    search = request.args.get("search")
+    search = request.args.getlist("search")
+    print(search)
     people = request.args.getlist("people")
     years = request.args.getlist("years")
     categories = request.args.getlist("categories")
