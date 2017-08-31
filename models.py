@@ -39,6 +39,7 @@ class MdB(db.Model):
     election_list = db.Column(db.String)
     list_won = db.Column(db.String)
     top_id = db.Column(db.Integer)
+    education_category = db.Column(db.String)
 
     @staticmethod
     def get_all():
@@ -176,15 +177,15 @@ class Utterance(db.Model):
     @staticmethod
     def all_by_education_category_count():
 
-        subquery = db.session.query(Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, MdB.education, Top.category, Top.number) \
+        subquery = db.session.query(Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, MdB.education_category, Top.category, Top.number) \
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
-            .group_by(MdB.education, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
+            .group_by(MdB.education_category, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
             .subquery()
 
-        query = db.session.query(subquery.c.category, subquery.c.education, func.count(subquery.c.category)) \
-            .group_by(subquery.c.education, subquery.c.category) \
+        query = db.session.query(subquery.c.category, subquery.c.education_category, func.count(subquery.c.category)) \
+            .group_by(subquery.c.education_category, subquery.c.category) \
             .all()
 
         result = []
