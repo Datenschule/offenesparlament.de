@@ -242,6 +242,7 @@ class Top(db.Model):
     category = db.Column(db.String)
     duration = db.Column(db.String)
     held_on = db.Column(db.Date)
+    sequence = db.Column(db.Integer)
 
     @staticmethod
     def get_all(search=None, people=None, years=None, categories=None):
@@ -264,15 +265,19 @@ class Top(db.Model):
             conditions = [Top.category.contains(category) for category in categories]
             query = query.filter(or_(*conditions))
         print(str(query))
-        data = query.all()
 
+        # Need to sort so that the groupby a couple of lines down works as expected
+        data = sorted(query.all(), key=lambda x: (x.wahlperiode, x.sitzung, x.sequence))
 
         results = []
-        for key, igroup in itertools.groupby(data, lambda x: (x.wahlperiode, x.sitzung, x.held_on, x.duration)):
-            wahlperiode, sitzung, held_on, duration = key
+        for key, igroup in itertools.groupby(data, lambda x: (x.wahlperiode, x.sitzung, x.held_on)):
+            wahlperiode, sitzung, held_on = key
             results.append({"session": {"wahlperiode": wahlperiode,
-                                        "sitzung": sitzung, "date": held_on, "duration": duration},
-                            "tops": [{"title": entry.title, "categories": entry.category.split(";")} for entry in list(igroup)]})
+                                        "sitzung": sitzung,
+                                        "date": held_on},
+                            "tops": [{"title": entry.title,
+                                      "categories": get_categories(entry)} for entry in list(igroup)]
+                            })
 
         return sorted(results, key=lambda entry: (entry["session"]["wahlperiode"], entry["session"]["sitzung"]))
 
@@ -335,3 +340,8 @@ class Top(db.Model):
 
         return d
 
+
+def get_categories(entry):
+    if entry.category:
+        return entry.category.split(";")
+    return []
