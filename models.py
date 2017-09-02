@@ -303,31 +303,37 @@ class Top(db.Model):
         return list(topics)
 
     @staticmethod
-    def sum_by_category(sum_by=None):
+    def sum_by_category():
         data = Top.split_by_category()
         results = {}
         for row in data:
             cat = row['category']
-            if cat not in results.keys():
-                results[cat] = 0
-            results[cat] += row['duration'] if row['duration'] is not None else 0
+            year = row['held_on'].year
+            if year not in results.keys():
+                results[year] = {}
+            if cat not in results[year].keys():
+                results[year][cat] = 0
+            results[year][cat] += row['duration'] if row['duration'] is not None else 0
         return results
 
     @staticmethod
-    def count_by_category(sum_by=None):
+    def count_by_category():
         data = Top.split_by_category()
         results = {}
         for row in data:
             cat = row['category']
-            if cat not in results.keys():
-                results[cat] = 0
-            results[cat] += 1
+            year = row['held_on'].year
+            if year not in results.keys():
+                results[year] = {}
+            if cat not in results[year].keys():
+                results[year][cat] = 0
+            results[year][cat] += 1
         return results
 
     @staticmethod
     def split_by_category():
-        db_topics = db.session.query(Top).filter(Top.category != '').all()
 
+        db_topics = db.session.query(Top).filter(Top.category != '').all()
         result = []
 
         for row in db_topics:
