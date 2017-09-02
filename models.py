@@ -145,6 +145,7 @@ class Utterance(db.Model):
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
+            .filter(Top.category != None) \
             .group_by(MdB.gender, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
             .subquery()
 
@@ -163,6 +164,7 @@ class Utterance(db.Model):
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
+            .filter(Top.category != None) \
             .group_by(MdB.birth_date, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
             .subquery()
 
@@ -171,7 +173,8 @@ class Utterance(db.Model):
 
         result = []
         for category, date in query:
-            result.append({"category": category, "date": date.year})
+            if (category):
+                result.append({"category": category, "date": date.year})
         return result
 
     @staticmethod
@@ -181,6 +184,7 @@ class Utterance(db.Model):
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
+            .filter(Top.category != None) \
             .group_by(MdB.education_category, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
             .subquery()
 
@@ -200,6 +204,7 @@ class Utterance(db.Model):
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
+            .filter(Top.category != None) \
             .group_by(MdB.election_list, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
             .subquery()
 
@@ -288,6 +293,7 @@ class Top(db.Model):
     @staticmethod
     def get_categories():
         db_topics = db.session.query(Top) \
+                .filter(Top.category != None) \
                 .distinct(Top.category) \
                 .all()
         topics = set()
