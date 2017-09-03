@@ -90,7 +90,7 @@ def api_speakers():
 def api_utterances(session_id):
     WAHLPERIODE=18
     utterances = Utterance.get_all(WAHLPERIODE, session_id)
-    return jsonify(data=[u.to_json() for u in utterances])
+    return jsonify(data=[u.to_json() for u in utterances], session={'date': utterances[0].top.held_on, 'number': session_id, 'wahlperiode': WAHLPERIODE})
 
 
 @app.route("/api/categories")

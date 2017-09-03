@@ -224,6 +224,8 @@ class Utterance(db.Model):
         for c in columns:
             name = c.name
             d[name] = getattr(self, name)
+        # d.pop('sitzung', None)
+        # d.pop('wahlperiode', None)
         d['top'] = self.top.title if self.top else None
         return d
 
