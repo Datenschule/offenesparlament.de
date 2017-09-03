@@ -250,6 +250,8 @@ class Top(db.Model):
     duration = db.Column(db.String)
     held_on = db.Column(db.Date)
     sequence = db.Column(db.Integer)
+    name = db.Column(db.String)
+    session_identifier = db.Column(db.String)
 
     @staticmethod
     def get_all(search=None, people=None, years=None, categories=None):
@@ -282,7 +284,7 @@ class Top(db.Model):
             results.append({"session": {"wahlperiode": wahlperiode,
                                         "sitzung": sitzung,
                                         "date": held_on},
-                            "tops": [{"title": entry.title,
+                            "tops": [{"title": entry.title, "name": entry.name, "session_identifier": entry.session_identifier,
                                       "categories": get_categories(entry)} for entry in list(igroup)]
                             })
 
