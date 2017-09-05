@@ -90,7 +90,23 @@ def api_speakers():
 def api_utterances(session_id):
     WAHLPERIODE=18
     utterances = Utterance.get_all(WAHLPERIODE, session_id)
-    return jsonify(data=[u.to_json() for u in utterances], session={'date': utterances[0].top.held_on, 'number': session_id, 'wahlperiode': WAHLPERIODE})
+    return jsonify(data=[ {
+        "id": item.Utterance.id,
+        "sequence": item.Utterance.sequence,
+        "sitzung": item.Utterance.sitzung,
+        "speaker": item.Utterance.speaker,
+        "speaker_cleaned": item.Utterance.speaker_cleaned,
+        "speaker_fp": item.Utterance.speaker_fp,
+        "speaker_key": item.Utterance.speaker_key,
+        "speaker_party": item.Utterance.speaker_party,
+        "text": item.Utterance.text,
+        "top": item.Utterance.top.title,
+        "top_id": item.Utterance.top.id,
+        "type": item.Utterance.type,
+        "wahlperiode": item.Utterance.wahlperiode,
+        "profile_url": item.MdB.profile_url
+
+    } for item in utterances], session={'date': utterances[0].Utterance.top.held_on, 'number': session_id, 'wahlperiode': WAHLPERIODE})
 
 
 @app.route("/api/categories")
