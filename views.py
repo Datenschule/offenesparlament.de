@@ -3,7 +3,8 @@ import os
 
 from flask import render_template, request, jsonify
 
-from plenartracker import app
+from plenartracker import app, cache
+
 from models import Utterance, Top, Speaker, MdB
 from datetime import datetime
 from datetime import date
@@ -18,48 +19,8 @@ def get_mdbs():
     with open(filename) as infile:
         return json.load(infile)
 
-
-@app.route("/protocols/session/<session>")
-def protocol(session):
-    data = Utterance.get_all(18, session)
-    mdbs = get_mdbs()
-    for utterance in data:
-        utterance.agw_url = mdbs.get(utterance.speaker_fp)
-    debug = request.args.get("debug")
-    return render_template('protocol.html', data=data, debug=debug)
-
-
-@app.route("/protocols/session/")
-def protocol_overview():
-    sessions = Top.get_all()
-    return render_template('protocol_overview.html', sessions=sessions)
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-@app.route("/protokolle")
-def protokolle():
-    return render_template("protokolle.html", title="Protokolle", selected="protokolle")
-
-@app.route("/tracker")
-def tracker():
-    return render_template("tracker.html", title="Tracker", selected="tracker")
-
-@app.route("/daten-tools")
-def daten_tools():
-    return render_template("daten-tools.html", title="Daten & Tools", selected="daten-tools")
-
-@app.route("/impressum")
-def impressum():
-    return render_template("impressum.html", title="Impressum")
-
-@app.route("/analyse/redeanteile")
-def viz_test():
-    return render_template("analyse/redeanteile.html", title="Analyse")
-
-
 @app.route("/api/tops/")
+@cache.cached(timeout=2000)
 def api_tops_grouped():
     search = request.args.getlist("search")
     print(search)
@@ -69,8 +30,8 @@ def api_tops_grouped():
     sessions = Top.get_all(search=search, people=people, years=years, categories=categories)
     return jsonify(data=sessions)
 
-
 @app.route("/api/speakers")
+@cache.cached(timeout=2000)
 def api_speakers():
     speakers = Speaker.get_all()
     i = 0
@@ -85,8 +46,8 @@ def api_speakers():
     ]
     return jsonify(data=speakers)
 
-
 @app.route("/api/session/<int:session_id>")
+@cache.cached(timeout=2000)
 def api_utterances(session_id):
     WAHLPERIODE=18
     utterances = Utterance.get_all(WAHLPERIODE, session_id)
@@ -108,21 +69,24 @@ def api_utterances(session_id):
 
     } for item in utterances], session={'date': utterances[0].Utterance.top.held_on, 'number': session_id, 'wahlperiode': WAHLPERIODE})
 
-
 @app.route("/api/categories")
+@cache.cached(timeout=2000)
 def api_categories():
     categories = Top.get_categories()
     return jsonify(data=categories)
 
 @app.route("/api/tops/category_sum")
+@cache.cached(timeout=2000)
 def api_tops_sum_by_category():
     return jsonify(Top.sum_by_category())
 
 @app.route("/api/tops/category_count")
+@cache.cached(timeout=2000)
 def api_tops_count_by_category():
     return jsonify(Top.count_by_category())
 
 @app.route("/api/utterances/by_gender_category")
+@cache.cached(timeout=2000)
 def api_uterrances():
     result = {}
     data = Utterance.all_by_gender_category_count()
@@ -136,6 +100,7 @@ def api_uterrances():
     return json.dumps(result)
 
 @app.route("/api/utterances/by_birth_date_category")
+@cache.cached(timeout=2000)
 def api_utterances_birth_date_category():
     data = Utterance.all_by_age_cetegory_count()
     result = {}
@@ -153,6 +118,7 @@ def api_utterances_birth_date_category():
     return json.dumps(result)
 
 @app.route("/api/utterances/by_profession_category")
+@cache.cached(timeout=2000)
 def api_utterances_profession_category():
     result = {}
     data = Utterance.all_by_education_category_count()
@@ -168,6 +134,7 @@ def api_utterances_profession_category():
     return json.dumps(result)
 
 @app.route("/api/utterances/by_election_list_category")
+@cache.cached(timeout=2000)
 def api_utterances_election_list_category():
     result = {}
     data = Utterance.all_by_election_list_category_count()
@@ -183,20 +150,24 @@ def api_utterances_election_list_category():
     return json.dumps(result)
 
 @app.route("/api/mdb/")
+@cache.cached(timeout=2000)
 def api_mdb():
     return jsonify(data=[mdb.to_json() for mdb in MdB.get_all()])
 
 @app.route("/api/mdb/speech_by_category")
+@cache.cached(timeout=2000)
 def api_mdb_speech_by_category():
     data = MdB.count_speeches_by_top_category()
     return jsonify(data)
 
 @app.route("/api/mdb/aggregated")
+@cache.cached(timeout=2000)
 def api_mdb_aggregated():
     column = request.args.get("attribute")
     return json.dumps(MdB.get_all_by(column))
 
 @app.route("/api/mdb/aggregated/age")
+@cache.cached(timeout=2000)
 def api_mdb_aggregated_age():
     data = MdB.get_all_by("birth_date")
     result = {}

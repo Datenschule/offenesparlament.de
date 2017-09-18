@@ -8,8 +8,10 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from jinja2 import evalcontextfilter, Markup, escape
+from flask_caching import Cache
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -18,6 +20,9 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR']=True
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 CORS(app)
+
+
+
 
 @app.template_filter()
 @evalcontextfilter
