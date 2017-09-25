@@ -20,7 +20,6 @@ def get_mdbs():
         return json.load(infile)
 
 @app.route("/api/tops/")
-@cache.cached(timeout=2000)
 def api_tops_grouped():
     search = request.args.getlist("search")
     print(search)
@@ -47,7 +46,6 @@ def api_speakers():
     return jsonify(data=speakers)
 
 @app.route("/api/session/<int:session_id>")
-@cache.cached(timeout=2000)
 def api_utterances(session_id):
     WAHLPERIODE=18
     utterances = Utterance.get_all(WAHLPERIODE, session_id)
@@ -61,13 +59,14 @@ def api_utterances(session_id):
         "speaker_key": item.Utterance.speaker_key,
         "speaker_party": item.Utterance.speaker_party,
         "text": item.Utterance.text,
-        "top": item.Utterance.top.title,
-        "top_id": item.Utterance.top.id,
+        "top": item.Utterance.top.title if item.Utterance.top else None,
+        "top_id": item.Utterance.top.id if item.Utterance.top else None,
         "type": item.Utterance.type,
         "wahlperiode": item.Utterance.wahlperiode,
         "profile_url": item.MdB.profile_url
 
-    } for item in utterances], session={'date': utterances[0].Utterance.top.held_on, 'number': session_id, 'wahlperiode': WAHLPERIODE})
+    } for item in utterances], session={'date': 'utterances[0].Utterance.top.held_on if utterances[0].Utterance.top else None',
+                                        'number': session_id, 'wahlperiode': WAHLPERIODE})
 
 @app.route("/api/categories")
 @cache.cached(timeout=2000)
@@ -158,6 +157,12 @@ def api_mdb():
 @cache.cached(timeout=2000)
 def api_mdb_speech_by_category():
     data = MdB.count_speeches_by_top_category()
+    return jsonify(data)
+
+@app.route("/api/mdb/speech_sum")
+@cache.cached(timeout=2000)
+def api_mdb_speech_sum():
+    data = MdB.count_speeches_sum()
     return jsonify(data)
 
 @app.route("/api/mdb/aggregated")

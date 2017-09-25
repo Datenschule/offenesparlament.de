@@ -68,18 +68,18 @@ class MdB(db.Model):
     @staticmethod
     def count_speeches_by_top_category():
         subquery = db.session.query(Utterance.speaker_fp, Utterance.sitzung, Utterance.wahlperiode, Utterance.top_id,
-                                    Utterance.type, Utterance.speaker_key) \
+                                    Utterance.speaker_key) \
+            .filter(Utterance.type == 'speech') \
+            .filter(Utterance.speaker_fp != None) \
             .group_by(Utterance.speaker_key, Utterance.speaker_fp, Utterance.sitzung, Utterance.wahlperiode,
-                      Utterance.top_id, Utterance.type) \
+                      Utterance.top_id) \
             .subquery()
         query_result = db.session.query(subquery.c.speaker_key, subquery.c.speaker_fp, MdB.party, Top.category, func.count(),
                                 MdB.first_name, MdB.last_name,MdB.picture,MdB.profile_url) \
             .filter(Top.id == subquery.c.top_id) \
             .filter(MdB.id == subquery.c.speaker_key) \
             .filter(Top.category != '') \
-            .filter(subquery.c.speaker_fp != None) \
             .filter(Top.category != 'ungültig') \
-            .filter(subquery.c.type == 'speech') \
             .group_by(subquery.c.speaker_fp, Top.category, subquery.c.speaker_key, MdB.party, MdB.first_name, MdB.last_name,
                       MdB.picture, MdB.profile_url) \
             .all()
@@ -110,6 +110,37 @@ class MdB(db.Model):
 
         return result
 
+    @staticmethod
+    def count_speeches_sum():
+        subquery = db.session.query(Utterance.speaker_fp, Utterance.sitzung, Utterance.wahlperiode, Utterance.top_id,
+                                    Utterance.type, Utterance.speaker_key) \
+            .group_by(Utterance.speaker_key, Utterance.speaker_fp, Utterance.sitzung, Utterance.wahlperiode,
+                      Utterance.top_id, Utterance.type) \
+            .subquery()
+        query_result = db.session.query(subquery.c.speaker_key, subquery.c.speaker_fp, MdB.party, func.count(),
+                                        MdB.first_name, MdB.last_name,MdB.picture,MdB.profile_url) \
+            .filter(Top.id == subquery.c.top_id) \
+            .filter(MdB.id == subquery.c.speaker_key) \
+            .filter(Top.category != '') \
+            .filter(subquery.c.speaker_fp != None) \
+            .filter(Top.category != 'ungültig') \
+            .filter(subquery.c.type == 'speech') \
+            .group_by(subquery.c.speaker_fp, subquery.c.speaker_key, MdB.party, MdB.first_name, MdB.last_name,
+                      MdB.picture, MdB.profile_url) \
+            .all()
+        data = []
+        for item in query_result:
+            data.append({
+                "speaker_key": item.speaker_key,
+                "speaker_fp": item.speaker_fp,
+                "party": item.party,
+                "first_name": item.first_name,
+                "last_name": item.last_name,
+                "picture": item.picture,
+                "profile_url": item.profile_url,
+                "count": item[3]
+            })
+        return data
 
     def __repr__(self):
         return '<MdB {}-{}-{}>'.format(self.first_name, self.last_name, self.party)
