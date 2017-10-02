@@ -65,7 +65,7 @@ def api_utterances(session_id):
         "wahlperiode": item.Utterance.wahlperiode,
         "profile_url": item.MdB.profile_url
 
-    } for item in utterances], session={'date': 'utterances[0].Utterance.top.held_on if utterances[0].Utterance.top else None',
+    } for item in utterances], session={'date': utterances[0].Utterance.top.held_on if utterances[0].Utterance.top else None,
                                         'number': session_id, 'wahlperiode': WAHLPERIODE})
 
 @app.route("/api/categories")

@@ -4,7 +4,7 @@ from datetime import datetime
 from datetime import date
 from functools import reduce
 
-from sqlalchemy import ForeignKey, or_, func
+from sqlalchemy import ForeignKey, or_, func, extract
 from sqlalchemy.orm import relationship, load_only, Load, class_mapper, subqueryload
 
 
@@ -294,14 +294,17 @@ class Top(db.Model):
 
         if search:
             for item in search:
-                query = query.filter(Utterance.text.contains(item))
+                query = query.filter(or_(Utterance.text.ilike('%' + item + '%'), Top.title.ilike('%' + item + '%')))
 
         if people:
             query = query.filter(Utterance.speaker_fp.in_(people))
 
         if years:
             years = [int(year) for year in years]
-            query = query.filter(Top.year.in_(years))
+            for year in years:
+                start = datetime(year, 1, 1)
+                end = datetime(year, 12, 31)
+                query = query.filter(extract('year', Top.held_on) == year)
 
         if categories:
             conditions = [Top.category.contains(category) for category in categories]
