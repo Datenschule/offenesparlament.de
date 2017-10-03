@@ -166,9 +166,9 @@ def api_mdb_speech_sum():
     return jsonify(data)
 
 @app.route("/api/mdb/aggregated")
-@cache.cached(timeout=2000)
 def api_mdb_aggregated():
     column = request.args.get("attribute")
+    print(column)
     return json.dumps(MdB.get_all_by(column))
 
 @app.route("/api/mdb/aggregated/age")

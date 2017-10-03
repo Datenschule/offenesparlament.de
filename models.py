@@ -334,6 +334,7 @@ class Top(db.Model):
     def get_categories():
         db_topics = db.session.query(Top) \
                 .filter(Top.category != None) \
+                .filter(Top.category != 'ungültig') \
                 .distinct(Top.category) \
                 .all()
         topics = set()
