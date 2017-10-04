@@ -160,12 +160,12 @@ class Utterance(db.Model):
     text = db.Column(db.String)
     top_id = db.Column(db.Integer, ForeignKey("tops.id"))
     top = relationship("Top")
-    speaker_key = db.Column(db.Integer)
+    speaker_key = db.Column(db.Integer, ForeignKey("mdb.id"))
 
     @staticmethod
     def get_all(wahlperiode, session):
         return db.session.query(Utterance, MdB) \
-            .filter(Utterance.speaker_key == MdB.id) \
+            .outerjoin(MdB) \
             .filter(Utterance.sitzung == session) \
             .filter(Utterance.wahlperiode == wahlperiode) \
             .order_by(Utterance.sequence) \

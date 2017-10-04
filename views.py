@@ -63,7 +63,7 @@ def api_utterances(session_id):
         "top_id": item.Utterance.top.id if item.Utterance.top else None,
         "type": item.Utterance.type,
         "wahlperiode": item.Utterance.wahlperiode,
-        "profile_url": item.MdB.profile_url
+        "profile_url": item.MdB.profile_url if item.MdB else None
 
     } for item in utterances], session={'date': utterances[0].Utterance.top.held_on if utterances[0].Utterance.top else None,
                                         'number': session_id, 'wahlperiode': WAHLPERIODE})
