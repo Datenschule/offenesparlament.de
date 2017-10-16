@@ -5,13 +5,14 @@ from datetime import date
 from functools import reduce
 
 from sqlalchemy import ForeignKey, or_, func, extract
-from sqlalchemy.orm import relationship, load_only, Load, class_mapper, subqueryload
+from sqlalchemy.orm import relationship, class_mapper
 
 
 class Speaker:
     @staticmethod
     def get_all():
-        return db.session.query(Utterance.speaker, Utterance.speaker_cleaned, Utterance.speaker_fp, Utterance.speaker_party, MdB.picture, MdB.birth_date, MdB.education) \
+        return db.session.query(Utterance.speaker, Utterance.speaker_cleaned, Utterance.speaker_fp,
+                                Utterance.speaker_party, MdB.picture, MdB.birth_date, MdB.education) \
             .filter(Utterance.type == 'speech') \
             .filter(Utterance.speaker_key == MdB.id) \
             .distinct(Utterance.speaker,
@@ -19,9 +20,11 @@ class Speaker:
                       Utterance.speaker_cleaned) \
             .all()
 
+
 def calculate_age(born):
     today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
 
 class MdB(db.Model):
     __tablename__ = "mdb"
@@ -74,13 +77,15 @@ class MdB(db.Model):
             .group_by(Utterance.speaker_key, Utterance.speaker_fp, Utterance.sitzung, Utterance.wahlperiode,
                       Utterance.top_id) \
             .subquery()
-        query_result = db.session.query(subquery.c.speaker_key, subquery.c.speaker_fp, MdB.party, Top.category, func.count(),
-                                MdB.first_name, MdB.last_name,MdB.picture,MdB.profile_url) \
+        query_result = db.session.query(subquery.c.speaker_key, subquery.c.speaker_fp, MdB.party, Top.category,
+                                        func.count(),
+                                        MdB.first_name, MdB.last_name, MdB.picture, MdB.profile_url) \
             .filter(Top.id == subquery.c.top_id) \
             .filter(MdB.id == subquery.c.speaker_key) \
             .filter(Top.category != '') \
             .filter(Top.category != 'ungültig') \
-            .group_by(subquery.c.speaker_fp, Top.category, subquery.c.speaker_key, MdB.party, MdB.first_name, MdB.last_name,
+            .group_by(subquery.c.speaker_fp, Top.category, subquery.c.speaker_key, MdB.party, MdB.first_name,
+                      MdB.last_name,
                       MdB.picture, MdB.profile_url) \
             .all()
 
@@ -118,7 +123,7 @@ class MdB(db.Model):
                       Utterance.top_id, Utterance.type) \
             .subquery()
         query_result = db.session.query(subquery.c.speaker_key, subquery.c.speaker_fp, MdB.party, func.count(),
-                                        MdB.first_name, MdB.last_name,MdB.picture,MdB.profile_url) \
+                                        MdB.first_name, MdB.last_name, MdB.picture, MdB.profile_url) \
             .filter(Top.id == subquery.c.top_id) \
             .filter(MdB.id == subquery.c.speaker_key) \
             .filter(Top.category != '') \
@@ -144,6 +149,7 @@ class MdB(db.Model):
 
     def __repr__(self):
         return '<MdB {}-{}-{}>'.format(self.first_name, self.last_name, self.party)
+
 
 class Utterance(db.Model):
     __tablename__ = "de_bundestag_plpr"
@@ -174,12 +180,14 @@ class Utterance(db.Model):
     @staticmethod
     def all_by_gender_category_count():
 
-        subquery = db.session.query(Utterance.sitzung.label("sitzung"), Utterance.wahlperiode, Utterance.speaker_cleaned, MdB.gender, Top.category, Top.number) \
+        subquery = db.session.query(Utterance.sitzung.label("sitzung"), Utterance.wahlperiode,
+                                    Utterance.speaker_cleaned, MdB.gender, Top.category, Top.number) \
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
             .filter(Top.category != None) \
-            .group_by(MdB.gender, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
+            .group_by(MdB.gender, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned,
+                      Top.number) \
             .subquery()
 
         query = db.session.query(subquery.c.category, subquery.c.gender, func.count(subquery.c.category)) \
@@ -193,12 +201,14 @@ class Utterance(db.Model):
 
     @staticmethod
     def all_by_age_cetegory_count():
-        from_sq = db.session.query(Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, MdB.birth_date, Top.category, Top.number) \
+        from_sq = db.session.query(Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, MdB.birth_date,
+                                   Top.category, Top.number) \
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
             .filter(Top.category != None) \
-            .group_by(MdB.birth_date, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
+            .group_by(MdB.birth_date, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned,
+                      Top.number) \
             .subquery()
 
         query = db.session.query(from_sq.c.category, from_sq.c.birth_date) \
@@ -213,12 +223,14 @@ class Utterance(db.Model):
     @staticmethod
     def all_by_education_category_count():
 
-        subquery = db.session.query(Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, MdB.education_category, Top.category, Top.number) \
+        subquery = db.session.query(Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned,
+                                    MdB.education_category, Top.category, Top.number) \
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
             .filter(Top.category != None) \
-            .group_by(MdB.education_category, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
+            .group_by(MdB.education_category, Top.category, Utterance.sitzung, Utterance.wahlperiode,
+                      Utterance.speaker_cleaned, Top.number) \
             .subquery()
 
         query = db.session.query(subquery.c.category, subquery.c.education_category, func.count(subquery.c.category)) \
@@ -233,12 +245,14 @@ class Utterance(db.Model):
     @staticmethod
     def all_by_election_list_category_count():
 
-        subquery = db.session.query(Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, MdB.election_list, Top.category, Top.number) \
+        subquery = db.session.query(Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned,
+                                    MdB.election_list, Top.category, Top.number) \
             .filter(Utterance.speaker_key == MdB.id) \
             .filter(Utterance.top_id == Top.id) \
             .filter(Utterance.type == "speech") \
             .filter(Top.category != None) \
-            .group_by(MdB.election_list, Top.category, Utterance.sitzung, Utterance.wahlperiode, Utterance.speaker_cleaned, Top.number) \
+            .group_by(MdB.election_list, Top.category, Utterance.sitzung, Utterance.wahlperiode,
+                      Utterance.speaker_cleaned, Top.number) \
             .subquery()
 
         query = db.session.query(subquery.c.category, subquery.c.election_list, func.count(subquery.c.category)) \
@@ -249,7 +263,6 @@ class Utterance(db.Model):
         for category, election_list, count in query:
             result.append({"category": category, "election_list": election_list, "count": count})
         return result
-
 
     def to_json(self):
         d = {}
@@ -320,7 +333,8 @@ class Top(db.Model):
             results.append({"session": {"wahlperiode": wahlperiode,
                                         "sitzung": sitzung,
                                         "date": held_on},
-                            "tops": [{"title": entry.title, "name": entry.name, "session_identifier": entry.session_identifier,
+                            "tops": [{"title": entry.title, "name": entry.name,
+                                      "session_identifier": entry.session_identifier,
                                       "categories": get_categories(entry)} for entry in list(igroup)]
                             })
 
@@ -333,10 +347,10 @@ class Top(db.Model):
     @staticmethod
     def get_categories():
         db_topics = db.session.query(Top) \
-                .filter(Top.category != None) \
-                .filter(Top.category != 'ungültig') \
-                .distinct(Top.category) \
-                .all()
+            .filter(Top.category != None) \
+            .filter(Top.category != 'ungültig') \
+            .distinct(Top.category) \
+            .all()
         topics = set()
         for row in db_topics:
             topics.update(row.category.split(";"))
